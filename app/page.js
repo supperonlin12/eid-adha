@@ -1,103 +1,152 @@
-import Image from "next/image";
+'use client';
+
+import { useState, useRef } from 'react';
+import { motion } from 'framer-motion';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [isMuted, setIsMuted] = useState(true);
+  const videoRef = useRef(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const toggleSound = () => {
+    if (!videoRef.current) return;
+    if (isMuted) {
+      videoRef.current.muted = false;
+      videoRef.current.play();
+    } else {
+      videoRef.current.muted = true;
+    }
+    setIsMuted(!isMuted);
+  };
+
+  return (
+    <main className="relative min-h-screen bg-gradient-to-br from-purple-200 via-indigo-200 to-blue-400 text-white font-sans overflow-hidden flex flex-col items-center justify-center px-6 py-10">
+
+      {/* خلفية فيديو الحرم */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <video
+          ref={videoRef}
+          src="/mecca-video.mp4"
+          autoPlay
+          muted={isMuted}
+          loop
+          playsInline
+          className="w-full h-full object-cover opacity-70"
+        />
+        <div className="absolute inset-0 bg-black/20" />
+      </div>
+
+      {/* زر التحكم بالصوت */}
+      <button
+        onClick={toggleSound}
+        className="z-20 absolute top-6 right-6 bg-white/20 backdrop-blur-md rounded px-4 py-2 text-sm text-white hover:bg-white/40 transition"
+      >
+        {isMuted ? 'تشغيل الصوت 🔊' : 'إيقاف الصوت 🔇'}
+      </button>
+
+      {/* محتوى التهنئة */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 1 }}
+        className="z-10 flex flex-col items-center justify-center max-w-4xl mx-auto mb-20"
+        style={{ marginTop: '-50px' }}
+      >
+        {/* عبارة العيد */}
+        <h1 className="text-6xl md:text-7xl font-extrabold tracking-wide drop-shadow-[0_4px_6px_rgba(0,0,0,0.8)] mb-4 font-serif leading-tight text-yellow-300 text-center">
+          عِيْد أَضْحَىٰ مُبَارَكْ
+        </h1>
+
+        {/* تهنئة متحركة */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 2 }}
+          className="text-3xl text-amber-100 max-w-xl mx-auto font-light italic drop-shadow-lg leading-relaxed -mt-1 text-center"
+          dir="rtl"
+        >
+          تَــقَــبَّــلَ اللّــهُ طَــاعَــتَــكُــم وَأَعَــادَ عَلَــيْــكُــمُ الْــعِــيــدَ بِــالْــخَــيْــرِ وَالْــيُــمْــنِ وَالْبَــرَكَــاتْ.. كُــلُّ عَــامٍ وَأَنْــتُــمْ بِــخَــيْــرٍ بِــمُــنَــاسَــبَــةِ عِــيــدِ الْأَضْــحَــى الْــمُــبَــارَك 
+        </motion.p>
+      </motion.div>
+
+      {/* التوقيع مع الصورة */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 2, duration: 1 }}
+        className="z-10 absolute bottom-6 text-center flex flex-col items-center gap-3"
+      >
+        <img
+          src="/your-image.png"
+          alt="Your Logo"
+          className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-xl"
+          style={{ marginBottom: '-10px' }}
+        />
+        <p className="text-white text-lg font-semibold drop-shadow-lg">Anas Alito</p>
+        <p className="text-white/80 text-sm italic drop-shadow-md">Web Developer</p>
+
+        {/* الأيقونات */}
+        <div className="flex justify-center gap-6 text-yellow-300">
+          <motion.svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-6 h-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+            animate={{ y: [0, -8, 0] }}
+            transition={{
+              duration: 3,
+              ease: "easeInOut",
+              repeat: Infinity,
+              repeatType: "mirror",
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          </motion.svg>
+
+          <motion.svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-6 h-6"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            stroke="none"
+            animate={{ rotate: [0, 10, 0, -10, 0] }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
           >
-            Read our docs
-          </a>
+            <path d="M10 1.5l2.39 4.85 5.35.78-3.87 3.77.91 5.32L10 14.77l-4.78 2.51.91-5.32L2.26 7.13l5.35-.78L10 1.5z" />
+          </motion.svg>
+
+          <motion.svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-6 h-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+            animate={{ y: [0, -6, 0] }}
+            transition={{
+              duration: 3.5,
+              ease: "easeInOut",
+              repeat: Infinity,
+              repeatType: "mirror",
+            }}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M7 17h10M7 7h10M12 17v-6m0 0L9 11m3-0l3 1"
+            />
+          </motion.svg>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </motion.div>
+    </main>
   );
 }
